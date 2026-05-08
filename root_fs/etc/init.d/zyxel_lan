@@ -6,10 +6,6 @@ start() {
 
 		/etc/init.d/network restart
     echo -n "Setup Network > > " > /dev/console
-    for i in $(seq 1 8); do
-        echo -n " > " > /dev/console
-        sleep 1
-    done
     mount -o bind /dev /tmp/zyxel_root/dev 2>/dev/null
     mount -o bind /proc /tmp/zyxel_root/proc 2>/dev/null
     mount -o bind /sys /tmp/zyxel_root/sys 2>/dev/null
@@ -37,10 +33,6 @@ start() {
     ifconfig eth0 up 2>/dev/null
     ifconfig nas10 up 2>/dev/null
 	echo -n "> > > WiFi Network " > /dev/console
-    for i in $(seq 1 5); do
-        echo -n " > " > /dev/console
-        sleep 1
-    done
     echo "80 8 1 0 0" > /proc/tc3162/led_def ;              echo "82 6 1 0 1" > /proc/tc3162/led_def
         chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -o nas10 -j MASQUERADE
         chroot /tmp/zyxel_root /usr/sbin/iptables -P INPUT ACCEPT
@@ -54,18 +46,7 @@ start() {
 	rmmod hw_nat.ko
 
 
-        for i in $(seq 1 1); do
-                echo "17 38 2 0 1" > /proc/tc3162/led_def
-                sleep 1
-                echo "17 38 2 0 0" > /proc/tc3162/led_def
-        done
-        echo -n " > " > /dev/console
-                for i in $(seq 1 3); do
-                        echo -n " > " > /dev/console
-                        sleep 1
-        done
-        echo -n " > > > " > /dev/console
-                echo -n " > > System Ready! "
+        echo -n " > > > System Ready! "
         LAN_NET=$(/os/usr/sbin/ip -o -f inet addr show br-lan | awk '{print $4}')
         echo 1 > /proc/sys/net/ipv4/ip_forward 2>/dev/null
                 echo 1 > /proc/tc3162/hwnat_off 2>/dev/null
@@ -73,15 +54,10 @@ start() {
                 echo 1 > /proc/tc3162/rps_enable 2>/dev/null
 		if [ -n "$LAN_NET" ]; then
                 #chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -s $LAN_NET -o nas10 -j MASQUERADE
-                echo 0 > /proc/tc3162/led_pwr_red ; sleep 10 ;          echo 1 > /proc/tc3162/led_pwr_red                      
+                (echo 0 > /proc/tc3162/led_pwr_red ; sleep 10 ;          echo 1 > /proc/tc3162/led_pwr_red) &                      
        fi
                       
                         
-                echo -n " > " > /dev/console
-                for i in $(seq 1 3); do
-                        echo -n " > " > /dev/console
-                        sleep 1
-        done
                 echo " 100% ] ...  Restarting Network" > /dev/console
                 /etc/init.d/network start
 				
@@ -89,17 +65,8 @@ start() {
 				VERSION=$(echo "$LINE" | cut -d' ' -f1 | cut -d'-' -f2); EMAIL=$(echo "$LINE" | cut -d' ' -f2);
 				EMAIL=$(echo "$LINE" | cut -d' ' -f2) ;
 				mkdir -p /tmp/sysinfo ; echo -n "EcoNet EN751627 SOC - Zyxel Matrix V-" > /tmp/sysinfo/model ; echo $VERSION  >> /tmp/sysinfo/model ; 
-                for i in $(seq 1 1); do
-                echo "34 4 2 0 1" > /proc/tc3162/led_def
-                sleep 1
-                echo "34 4 2 0 0" > /proc/tc3162/led_def
-                done
              echo -n "Done > > [" > /dev/console
                         touch /overlay/.reset
-                for i in $(seq 1 20); do
-				echo -n " > " > /dev/console
-				sleep 1
-				done
 							
 			killall wapp 2>/dev/null
 			killall mapd 2>/dev/null
@@ -113,7 +80,7 @@ start() {
 			ifconfig nas10 0.0.0.0
 			brctl addif br-mesh nas10
 
-			
+			(
 			ifconfig apcli0 down
 			ifconfig apcli0 up
 			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliEnable=0
@@ -143,6 +110,7 @@ start() {
 
 			sleep 5
 				usr/bin/wifi-backhaul.sh &
+			) &
 				
 				
                 echo " 100%  Ready! - Press any key to login ...]" > /dev/console
