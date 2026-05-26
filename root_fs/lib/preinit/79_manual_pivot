@@ -4,6 +4,7 @@
 do_yaffs_bind() {
     local mtd_dev="/dev/mtdblock11"
     local mount_point="/overlay"
+	local targetFS=""	
 
     echo " Mounting on $mtd_dev ..." > /dev/console
 
@@ -44,7 +45,16 @@ do_yaffs_bind() {
         umount $mount_point
         mtd erase misc
         mount -t yaffs2 $mtd_dev $mount_point
-
+		local bootf=$(cat /proc/tc3162/gpon_bootflag 2>/dev/null)
+				if [ "$bootf" = "1" ]; then
+					#mtd erase tclinux
+					targetFS="/dev/mtdblock3"
+					#mount -t yaffs2 -o rw /dev/mtdblock3 /apps
+				else
+					#mtd erase tclinux_slave
+					targetFS="/dev/mtdblock6"
+					#mount -t yaffs2 -o rw /dev/mtdblock6 /apps
+				fi   
     fi
     if [ ! -f "$mount_point/.initialized" ]; then
         echo " First boot - Please wait $mtd_dev ... " > /dev/console
@@ -68,6 +78,7 @@ do_yaffs_bind() {
         echo " Copy complete." > /dev/console
     fi
     mount -t yaffs2 /dev/mtdblock9 /data
+	#mount -t yaffs2 -o rw $targetFS /apps
 	
     for dir in usr bin sbin root www etc; do
         if [ -d "$mount_point/$dir" ] && [ -d "/$dir" ]; then

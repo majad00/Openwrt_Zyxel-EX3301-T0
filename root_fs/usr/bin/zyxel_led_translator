@@ -9,8 +9,8 @@ insmod /lib/modules/3.18.21/tcledctrl.ko 2>/dev/null
 insmod /lib/modules/3.18.21/zyinetled.ko 2>/dev/null
 echo 1 > /proc/tc3162/pwm_start
 
-chroot /tmp/zyxel_root/ /usr/bin/sys led on >/dev/null 2>&1
-chroot /tmp/zyxel_root/ /usr/bin/sys led off >/dev/null 2>&1
+chroot /tmp/zyxel_root/ /usr/bin/sys led on 2>/dev/null 2>&1
+chroot /tmp/zyxel_root/ /usr/bin/sys led off 2>/dev/null 2>&1
 sleep 1
 
 while true; do
@@ -34,48 +34,57 @@ while true; do
      
     T_INT=$(uci -q get zyxel_leds.internet.trigger)
     if [ "$T_INT" = "default-on" ]; then
-        echo "84 3 1 0 0" > /proc/tc3162/led_def
-        echo "33 4 1 0 1" > /proc/tc3162/led_def
-        echo 0 > /proc/tc3162/led_internet 2>/dev/null
-    elif [ "$T_INT" = "default-red" ]; then
+	    echo 0 > /proc/tc3162/led_internet 2>/dev/null
         echo "33 4 1 0 0" > /proc/tc3162/led_def
-        echo "84 3 1 0 1" > /proc/tc3162/led_def
-        echo 0 > /proc/tc3162/led_internet_red 2>/dev/null
+        echo "33 4 1 0 1" > /proc/tc3162/led_def
+    elif [ "$T_INT" = "default-red" ]; then
+	    echo 0 > /proc/tc3162/led_internet_red 2>/dev/null
+        echo "33 4 1 0 0" > /proc/tc3162/led_def
+        echo "33 4 1 0 1" > /proc/tc3162/led_def
     elif [ "$T_INT" = "netdev" ]; then
         if ifconfig eth3 2>/dev/null | grep -q "inet addr"; then
-            echo "84 3 1 0 0" > /proc/tc3162/led_def
-            echo "33 4 1 0 1" > /proc/tc3162/led_def
-            echo 0 > /proc/tc3162/led_internet 2>/dev/null
+			echo 0 > /proc/tc3162/led_internet 2>/dev/null
+            echo "34 4 2 0 0" > /proc/tc3162/led_def
+            echo "34 4 2 0 1" > /proc/tc3162/led_def
+            
         else
+		    echo 0 > /proc/tc3162/led_internet_red 2>/dev/null
+			echo 0 > /proc/tc3162/led_internet 2>/dev/null
             echo "33 4 1 0 0" > /proc/tc3162/led_def
-            echo "84 3 1 0 1" > /proc/tc3162/led_def
-            echo 0 > /proc/tc3162/led_internet_red 2>/dev/null
+			echo "34 4 2 0 0" > /proc/tc3162/led_def
         fi
     else
         echo 1 > /proc/tc3162/led_internet 2>/dev/null
         echo 1 > /proc/tc3162/led_internet_red 2>/dev/null
         echo "33 4 1 0 0" > /proc/tc3162/led_def
+		echo "34 4 2 0 0" > /proc/tc3162/led_def
         echo "84 3 1 0 0" > /proc/tc3162/led_def
     fi
 
     
     T_W2G=$(uci -q get zyxel_leds.wifi2g.trigger)
-    if [ "$T_W2G" = "default-on" ] || { [ "$T_W2G" = "netdev" ] && ifconfig ra0 2>/dev/null | grep -q "UP"; }; then
-        echo "13 21 1 0 1" > /proc/tc3162/led_def
-        echo 0 > /proc/tc3162/led_wlan 2>/dev/null
+    if [ "$T_W2G" = "default-on" ]; then
+		echo "13 21 1 0 0" > /proc/tc3162/led_def
+        echo 0 > /proc/tc3162/led_wlan 2>/dev/null 		
+	elif [ "$T_W2G" = "netdev" ]; then
+        echo "14 21 2 0 0" > /proc/tc3162/led_def
+        echo "14 21 2 0 1" > /proc/tc3162/led_def
     else
         echo 1 > /proc/tc3162/led_wlan 2>/dev/null
-        echo "13 21 1 0 0" > /proc/tc3162/led_def
+		echo "13 21 1 0 0" > /proc/tc3162/led_def
+		echo "13 21 1 0 1" > /proc/tc3162/led_def
     fi
-
      
     T_W5G=$(uci -q get zyxel_leds.wifi5g.trigger)
-    if [ "$T_W5G" = "default-on" ] || { [ "$T_W5G" = "netdev" ] && ifconfig rai5 2>/dev/null | grep -q "UP"; }; then
-        echo "106 20 1 0 1" > /proc/tc3162/led_def
-        echo 0 > /proc/tc3162/led_wlan_5g 2>/dev/null
-    else
-        echo 1 > /proc/tc3162/led_wlan_5g 2>/dev/null
+    if [ "$T_W5G" = "default-on" ] ; then
+	    echo 0 > /proc/tc3162/led_wlan_5g 2>/dev/null
         echo "106 20 1 0 0" > /proc/tc3162/led_def
+	elif [ "$T_W5G" = "netdev" ]; then
+        echo "107 20 2 0 0" > /proc/tc3162/led_def
+        echo "107 20 2 0 1" > /proc/tc3162/led_def        
+    else	
+		echo 1 > /proc/tc3162/led_wlan_5g 2>/dev/null
+        echo "106 20 1 0 1" > /proc/tc3162/led_def
     fi
 
     sleep 4

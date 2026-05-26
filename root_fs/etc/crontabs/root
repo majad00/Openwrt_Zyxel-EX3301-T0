@@ -1,1 +1,2 @@
 0 */5 * * * /sbin/save_matrix
+*/5 * * * * /usr/bin/custom-watchdog.sh

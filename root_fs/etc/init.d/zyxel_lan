@@ -4,7 +4,7 @@ START=92
 # Written as part of EX-3310 port
 start() {
 
-		/etc/init.d/network restart
+     /etc/init.d/network restart
     echo -n "Setup Network > > " > /dev/console
     for i in $(seq 1 8); do
         echo -n " > " > /dev/console
@@ -15,28 +15,28 @@ start() {
     mount -o bind /sys /tmp/zyxel_root/sys 2>/dev/null
     mkdir -p /tmp/hosts/dhcp
 
-   	for i in $(seq 1 3); do
+        for i in $(seq 1 2); do
     echo "14 21 2 0 1" > /proc/tc3162/led_def
     sleep 1
     echo "14 21 2 0 0" > /proc/tc3162/led_def
-	done
+        done
     echo "=== Powering Up Switch ===" > /dev/console
-        echo 1 > /proc/irq/28/smp_affinity
-        echo 2 > /proc/irq/27/smp_affinity
-        echo 4 > /proc/irq/26/smp_affinity
-        echo 8 > /proc/irq/25/smp_affinity
+       # echo 1 > /proc/irq/28/smp_affinity
+       # echo 2 > /proc/irq/27/smp_affinity
+       # echo 4 > /proc/irq/26/smp_affinity
+      #  echo 8 > /proc/irq/25/smp_affinity
         #maping wifi  2 and 5 ghz on two cpus
         echo 2 > /proc/irq/21/smp_affinity
         echo 4 > /proc/irq/20/smp_affinity
         #tuning
-        echo 1 > /proc/tc3162/igmp_hwnat 2>/dev/null
-        echo 1 1 1 0 > /proc/tc3162/sw_rps 2>/dev/null
-        echo 1 1 1 0 > /proc/tc3162/sw_rps_2g 2>/dev/null
+       # echo 1 > /proc/tc3162/igmp_hwnat 2>/dev/null
+        #echo 1 1 1 0 > /proc/tc3162/sw_rps 2>/dev/null
+        #echo 1 1 1 0 > /proc/tc3162/sw_rps_2g 2>/dev/null
      /etc/init.d/dnsmasq stop
 
     ifconfig eth0 up 2>/dev/null
     ifconfig nas10 up 2>/dev/null
-	echo -n "> > > WiFi Network " > /dev/console
+        echo -n "> > > WiFi Network " > /dev/console
     for i in $(seq 1 5); do
         echo -n " > " > /dev/console
         sleep 1
@@ -48,102 +48,63 @@ start() {
         chroot /tmp/zyxel_root /usr/sbin/iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
         chroot /tmp/zyxel_root /usr/sbin/iptables -P FORWARD ACCEPT
         echo "nameserver 8.8.8.8" > /etc/resolv.conf
-        /usr/sbin/dnsmasq -u root -S 8.8.8.8 -S 8.8.4.4
+        #/usr/sbin/dnsmasq -u root -S 8.8.8.8 -S 8.8.4.4
     echo "V15" > /tmp/sysinfo/model ; mkdir /tmp/sysinfo ; echo "EX-3310-T0" > /tmp/sysinfo/board_name
-	# can be disabled if wifi crashes remember to set hwnat_off to 0
-	rmmod hw_nat.ko
+        # can be disabled if wifi crashes remember to set hwnat_off to 0
+        rmmod hw_nat.ko
 
 
-        for i in $(seq 1 1); do
+        for i in $(seq 1 2); do
                 echo "17 38 2 0 1" > /proc/tc3162/led_def
                 sleep 1
                 echo "17 38 2 0 0" > /proc/tc3162/led_def
         done
-        echo -n " > " > /dev/console
-                for i in $(seq 1 3); do
-                        echo -n " > " > /dev/console
-                        sleep 1
-        done
         echo -n " > > > " > /dev/console
-                echo -n " > > System Ready! "
+
         LAN_NET=$(/os/usr/sbin/ip -o -f inet addr show br-lan | awk '{print $4}')
         echo 1 > /proc/sys/net/ipv4/ip_forward 2>/dev/null
-                echo 1 > /proc/tc3162/hwnat_off 2>/dev/null
-                echo 1 > /proc/tc3162/igmp_hwnat 2>/dev/null
-                echo 1 > /proc/tc3162/rps_enable 2>/dev/null
-		if [ -n "$LAN_NET" ]; then
+                #echo 1 > /proc/tc3162/hwnat_off 2>/dev/null
+                #echo 1 > /proc/tc3162/igmp_hwnat 2>/dev/null
+                #echo 1 > /proc/tc3162/rps_enable 2>/dev/null
+                if [ -n "$LAN_NET" ]; then
                 #chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -s $LAN_NET -o nas10 -j MASQUERADE
-                echo 0 > /proc/tc3162/led_pwr_red ; sleep 10 ;          echo 1 > /proc/tc3162/led_pwr_red                      
+                echo 0 > /proc/tc3162/led_pwr_red ; sleep 10 ;          echo 1 > /proc/tc3162/led_pwr_red
        fi
-                      
-                        
-                echo -n " > " > /dev/console
-                for i in $(seq 1 3); do
-                        echo -n " > " > /dev/console
-                        sleep 1
-        done
-                echo " 100% ] ...  Restarting Network" > /dev/console
-                /etc/init.d/network start
-				
-				LINE=$(dd if=/dev/mtdblock3 2>/dev/null | strings | grep -E "V-[0-9]+.*@" | xargs);
-				VERSION=$(echo "$LINE" | cut -d' ' -f1 | cut -d'-' -f2); EMAIL=$(echo "$LINE" | cut -d' ' -f2);
-				EMAIL=$(echo "$LINE" | cut -d' ' -f2) ;
-				mkdir -p /tmp/sysinfo ; echo -n "EcoNet EN751627 SOC - Zyxel Matrix V-" > /tmp/sysinfo/model ; echo $VERSION  >> /tmp/sysinfo/model ; 
-                for i in $(seq 1 1); do
+                                #/etc/init.d/network start
+                                echo -n "Restarting Network > > " > /dev/console
+                                LINE=$(dd if=/dev/mtdblock3 2>/dev/null | strings | grep -E "V-[0-9]+.*@" | xargs);
+                                VERSION=$(echo "$LINE" | cut -d' ' -f1 | cut -d'-' -f2); EMAIL=$(echo "$LINE" | cut -d' ' -f2);
+                                EMAIL=$(echo "$LINE" | cut -d' ' -f2) ;
+                                mkdir -p /tmp/sysinfo ; echo -n "EcoNet EN751627 SOC - Zyxel Matrix V-" > /tmp/sysinfo/model ; echo $VERSION  >> /tmp/sysinfo/model ;
+				/etc/init.d/dnsmasq start
+			   for i in $(seq 1 2); do
                 echo "34 4 2 0 1" > /proc/tc3162/led_def
                 sleep 1
                 echo "34 4 2 0 0" > /proc/tc3162/led_def
                 done
-             echo -n "Done > > [" > /dev/console
-                        touch /overlay/.reset
-                for i in $(seq 1 20); do
-				echo -n " > " > /dev/console
-				sleep 1
-				done
-							
-			killall wapp 2>/dev/null
-			killall mapd 2>/dev/null
-			killall zyMAPSteer 2>/dev/null
 
-			
-			brctl addbr br-mesh 2>/dev/null
-			ifconfig br-mesh up
-			brctl delif br-lan nas10 2>/dev/null
-			brctl delif br-lan apcli0 2>/dev/null
-			ifconfig nas10 0.0.0.0
-			brctl addif br-mesh nas10
+                touch /overlay/.reset
+                for i in $(seq 1 15); do
+                                echo -n " > " > /dev/console
+                                sleep 1
+                                done
 
-			
-			ifconfig apcli0 down
-			ifconfig apcli0 up
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliEnable=0
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set AutoChannelSel=0
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set Channel=1
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set HtBw=0
+                        killall wapp 2>/dev/null
+                        killall mapd 2>/dev/null
+                        killall zyMAPSteer 2>/dev/null
+                        brctl addbr br-mesh 2>/dev/null
+                        ifconfig br-mesh up
+                        ifconfig apcli0 down
+                        ifconfig apcli0 up
+                        chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliEnable=0
+                        chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set AutoChannelSel=0
+                        chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set HtBw=0
+
+                        chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set SiteSurvey=1
+                        sleep 10
+
+                                usr/bin/wifi-backhaul.sh &
 
 
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set SiteSurvey=1
-			sleep 5
-
-	
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliAuthMode=WPA2PSK
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliEncrypType=AES
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliSsid=""
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliWPAPSK=""
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliBssid=""
-
-
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv apcli0 set ApCliEnable=1
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set RadioOn=0
-			sleep 3
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set RadioOn=1
-
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set AutoChannelSel=0
-			chroot /tmp/zyxel_root /usr/sbin/iwpriv ra0 set Channel=1
-
-			sleep 5
-				usr/bin/wifi-backhaul.sh &
-				
-				
                 echo " 100%  Ready! - Press any key to login ...]" > /dev/console
 }

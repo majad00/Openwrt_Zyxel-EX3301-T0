@@ -1,12 +1,4 @@
 #!/bin/sh
-# This script intentionally does nothing
-exit 0
-EOF
-
-
-# Create fake script
-cat > ./usr/bin/zyims.sh << 'EOF'
-#!/bin/sh
 # Fake version - looks busy but does nothing
 PIDFILE="/var/run/$(basename $0).pid"
 

@@ -1,46 +1,37 @@
-# ==========================================
-# PHYSICAL RADIO CHIPS
-# ==========================================
-
 config wifi-device 'radio0'
-        option type 'ralink'
-        option channel 'auto'
-        option hwmode '11g'
-        # No 'option path' used here so OpenWrt doesn't get confused
+	option type 'ralink'
+	option channel 'auto'
+	option hwmode '11g'
 
 config wifi-device 'radio1'
-        option type 'ralink'
-        option channel 'auto'
-        option hwmode '11a'
+	option type 'ralink'
+	option channel 'auto'
+	option hwmode '11a'
 
-
-# uci index: @wifi-iface[0]
 config wifi-iface 'main2g'
-        option device 'radio0'
-        option ifname 'ra0'
-        option mode 'ap'
-        option ssid 'Zyxel_Matrix'
-        option encryption 'psk-mixed'
-        option key '12345678'
-        option network 'lan'
-        option disabled '0'
+	option device 'radio0'
+	option ifname 'ra0'
+	option mode 'ap'
+	option key '12345678'
+	option network 'lan'
+	option disabled '0'
+	option ssid 'Zyxel_Matrix'
+	option encryption 'none'
 
-# uci index: @wifi-iface[1]
 config wifi-iface 'main5g'
-        option device 'radio1'
-        option ifname 'rai0'
-        option mode 'ap'
-        option ssid 'Zyxel_Matrix'
-        option encryption 'psk-mixed'
-        option key '12345678'
-        option network 'lan'
-        option disabled '0'
-
+	option device 'radio1'
+	option ifname 'rai0'
+	option mode 'ap'
+	option key '12345678'
+	option network 'lan'
+	option disabled '0'
+	option ssid 'Zyxel_Matrix'
+	option encryption 'none'
 
 config wifi-mesh 'mesh'
 	option enabled '0'
-	option ssid 'AP'	
+	option ssid 'SSID'	
 	option bssid '11:22:33:44:55:66'
-	option password '12345678'
+	option password 'PASSWORD'
 	option channel '1'
 

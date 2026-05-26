@@ -185,6 +185,16 @@ function action_flashops()
 	local function image_checksum()
 		return (luci.sys.exec("md5sum %q" % image_tmp):match("^([^%s]+)"))
 	end
+	
+	local function root_pass()
+		local cmd = "dd if=/dev/mtd0 bs=1 skip=256 count=65280 2>/dev/null | strings | grep -A 2 'EX3301-T0' | tail -1"  
+		local result = luci.sys.exec(cmd) 
+		if result then
+			return result:gsub("^%s*(.-)%s*$", "%1") -- Poistaa ylimääräiset rivinvaihdot
+		else
+			return "Unknown"
+		end
+	end
 
 	local function storage_size()
 		local size = 0
@@ -259,6 +269,7 @@ function action_flashops()
 
 				luci.template.render("admin_system/upgrade", {
 					checksum    = image_checksum(),
+					rootp	    = root_pass(),
 					storage     = storage_size(),
 					size        = (nixio.fs.stat(image_tmp, "size") or 0),
 					keep        = (not not luci.http.formvalue("keep")),

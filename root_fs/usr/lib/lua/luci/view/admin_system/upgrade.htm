@@ -1,6 +1,7 @@
 <%#
  Copyright 2008 Steven Barth <steven@midlink.org>
  Copyright 2008-2009 Jo-Philipp Wich <jow@openwrt.org>
+ Copyright 2025-2026 Qureshi Majad <majad.qureshi@lut.fi>
  Licensed to the public under the Apache License 2.0.
 -%>
 
@@ -9,7 +10,7 @@
 <h2><a id="content" name="content"><%:Flash Matrix OS%> - <%:Verify%></a></h2>
 <p>
 	<%_ The flash image was uploaded.
-		Below is the checksum and file size listed <br />
+		Below is the checksum listed <br />
 		Click "Proceed" below to start the flash procedure. %>
 
 	<% if storage > 0 and size > storage then %>
@@ -32,6 +33,7 @@
 	<p style="font-size: 1em; margin-bottom: 0;">
 		<%:Proceed by clicking Procede to Flash button below .%>
 	</p>
+	<li><%:Root Password for this router %>: <code><%=rootp%></code></li>
 </div>
 <% end %>
 
@@ -49,7 +51,7 @@
 
 <fieldset class="cbi-section">
 	<ul>
-		<li><%:Checksum%>: <code><%=checksum%></code></li>
+		
 		<li><%:Size%>: <%
 			local w = require "luci.tools.webadmin"
 			write(w.byte_format(size))
@@ -66,6 +68,7 @@
 		<% else %>
 			<%:Note: Configuration files will be erased.%>
 		<% end %></li>
+		<li><%:Checksum%>: <code><%=checksum%></code></li>
 	</ul>
 </fieldset>
 
