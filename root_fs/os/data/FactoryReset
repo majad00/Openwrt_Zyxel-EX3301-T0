@@ -1,7 +1,0 @@
-for reset to default,
-FR_ReasonCode: 1=GUI, 2=Telnet, 3=Button, 4=TR-069
-format DDMMYYYYhhmmss hh = 24 hour
-3@ 10042025000257
-1@ 10042025000729
-3@ 10042025002045
-3@ 10042025000032
