@@ -1,6 +1,3 @@
-*.img
-*.tar.bz2
 xx3301/image_builder/
-*.img
-*.tar.bz2
-xx3301/image_builder/
+root_fs_git
+build_
