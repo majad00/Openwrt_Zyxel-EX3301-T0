@@ -126,15 +126,43 @@ Due to GitHub size limitations, large files are hosted externally. The following
 2. Place them in the `source/` directory
 3. Make changes to code
 4. Use cross compile guide to add utilities
-5. Use the PandC-v12 to sign the firmware
+5. Use the repack_firmware to sign the firmware
 
-### PandC-v12 Features
+### using repack_firmware
 
-- Manages signing and packing process
-- Ensures proper offsets for NAND layout
-- Handles kernel and bootloader expectations
-- Add kernel to the rootfs
-- Applies required proprietary signatures
+⚠️ **IMPORTANT**: Please use the repack script without any modification to the source (root_fs) and check the size of final.bin at the end if it match to the sysupgrade firmware provided, then you are ready to modify root_Fs
+
+
+Clone the repository:  
+   ```
+   git clone https://github.com/majad00/Openwrt_Zyxel-EX3301-T0.git
+   ```
+
+2. **Navigate to the Project Directory:**  
+   Change into the project's directory:  
+   ```
+   cd Openwrt_Zyxel-EX3301-T0
+   ```
+
+3. **Make the Script Executable:**  
+   Run the following command to change the permission of the script:  
+   ```
+   chmod +x repack_firmware
+   ```
+
+4. **Run the Firmware Repack Script:**  
+   Execute the script with superuser privileges:  it will repack firmware and sign it as well.
+   ```
+   sudo ./repack_firmware_v17
+   ```
+
+5. **Custome firmware:**  
+   You can find the custom firmware in the root directory named "final.bin".
+
+
+
+⚠️ **Note**: If you are on vendor-specific ISP firmware that prevents you from flashing generic firmware, copy the ISP-provided firmware to the project root directory and rename it to "zyxel-3.3-squashfs-rollback.bin." 
+Run the "repack_firmware" , it will transfer the signature from the ISP-specific firmware to your custom OpenWrt build (final.bin).
 
 
 ## Target Chipset
