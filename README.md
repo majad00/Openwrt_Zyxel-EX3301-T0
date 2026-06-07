@@ -11,16 +11,9 @@ OpenWrt for Zyxel EX3301-T0 is a community-built version developed using ImageBu
 
 > If you are on vender specific ISP please rebuild custom firmware ( see section "Build from source")
 
-##  Features  Full functional Openwrt 
-- **Easy Installation** - No UART or disassembly required! Install from Web interface
-- **Root access** - Zyxel-Matrix OS with full previliges (No Password or 1234)
-- **pre compiled** - cross-compiled binary ready to install
-- **Roll Back** - Openwrt Sysupgrade can flash OEM firmware to router
-- **Wi-Fi Backhaul** - You dont need WAN port for upstream router you can use fast Wi-Fi backhaul
+## Quick Download
 
-## 📥 Quick Download
-
-👉 **[Download Latest Release](https://github.com/majad00/Openwrt_Zyxel-EX3301-T0/releases/download/Openwrt/Openwrt_Zyxel_EX3301-T0-v-17.zip)**
+**[Download Latest Release](https://github.com/majad00/Openwrt_Zyxel-EX3301-T0/releases/download/Openwrt/Openwrt_Zyxel_EX3301-T0-v-17.zip)**
 	Current version : v-17 sha256:51f54da0664e07d09ea402921952b7b1886704f3d9f7cae75819464bc0a12f4e
 The download includes:
 - `openwrt-15.5-zyxel-matrix-v-17-squashfs-sysupgrade.bin` - Zyxel-Matrix for DX3301-T0 and EX3301-T0
@@ -29,7 +22,7 @@ The download includes:
 - `CHANGELOG.txt` - Version history
 - `docs` - for detail documentations and installation
   
-## Flashing in 2 minutes 
+## Flashing  
 
 1. **Connect** Ethernet cable from PC to router
 2. **Login to router**: Login to OEM Zyxel router through web
@@ -41,7 +34,7 @@ The download includes:
 > ⚠️ **IMPORTANT**: Change password after first boot!, on successfull boot the network LED starts blinking
 
 
-##  Flashing using UART (safe for testing )
+##  Flashing using UART (safe for testing or recovery from brick)
 1. **Connect** Using TX, RX and GND, rename the firmware to RAS.bin (optional)
 2. **Get to Shell**: Intrupt boot process by pressing any button
 3. **Prepare**: Type "ATUR RAS.bin" ( router will start a tftp server and wait for the file)
@@ -78,7 +71,7 @@ Clone the repository:
    ```
 
 5. **Custome firmware:**  
-   You can find the custom firmware in the root directory named "final.bin".
+   The custom firmware  will be in the root directory under the name "final.bin." If your custom firmware causes the router to become unresponsive, please refer to the UART installation guide. Only proceed with flashing custom firmware (final.bin) if you have UART recovery available or if you are confident in your abilities.
 
 
 
