@@ -61,7 +61,7 @@ Clone the repository:
 3. **Make the Script Executable:**  
    Run the following command to change the permission of the script:  
    ```
-   chmod +x repack_firmware
+   chmod +x repack_firmware_v17
    ```
 
 4. **Run the Firmware Repack Script:**  
