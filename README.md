@@ -44,7 +44,7 @@ The download includes:
 
 ##  Build from source
 
-⚠️ **IMPORTANT**: Please use the repack script without any modification to the source (root_fs) and check the size of final.bin at the end if it match to the sysupgrade firmware provided, then you are ready to modify root_Fs
+⚠️ **IMPORTANT**: Please use instruction below without modification to the source (root_fs) and check the size of "final.bin" at the end if it match to the provided BIN of sysupgrade firmware , then your build setup is good.
 
 
 Clone the repository:  
