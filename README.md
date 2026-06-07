@@ -7,16 +7,12 @@
 
 OpenWrt for Zyxel EX3301-T0 is a community-built version developed using ImageBuilder and the OpenWrt 15.05 source code. After flashing it through the OEM firmware upgrade, you can start using this OpenWrt build immediately. If needed, you can revert to the OEM firmware by using a rollback firmware or by installing the latest Zyxel firmware.
 
-### Version V-17 is stable release which includes support for Wi-Fi backhaul.
-( Activate from Network > Mesh Backhaul dropdown menu in LUCI)
+> Version V-17 is stable release which includes support for Wi-Fi backhaul.
 
-⚠️ **Important**: Please use either WAN or Wi-Fi backhaul. Using both together may slow performance.
-
+> If you are on vender specific ISP please rebuild custom firmware ( see section "Build from source")
 
 ##  Features  Full functional Openwrt 
 - **Easy Installation** - No UART or disassembly required! Install from Web interface
-- **Full Luci Interface** - Manage your router through any browser
-- **Advanced Radio Control** - Control over all available Radios
 - **Root access** - Zyxel-Matrix OS with full previliges (No Password or 1234)
 - **pre compiled** - cross-compiled binary ready to install
 - **Roll Back** - Openwrt Sysupgrade can flash OEM firmware to router
@@ -52,6 +48,42 @@ The download includes:
 4. **Flash**: Send RAS.bin file using TFTP, tftp 192.168.1.1 
 5. **Wait**: Bootloader will write RAS.bin to proper offsets, Power LED is red
 6. **First Boot**: router will reboot, wait for 2-3 minutes for first boot
+
+##  Build from source
+
+⚠️ **IMPORTANT**: Please use the repack script without any modification to the source (root_fs) and check the size of final.bin at the end if it match to the sysupgrade firmware provided, then you are ready to modify root_Fs
+
+
+Clone the repository:  
+   ```
+   git clone https://github.com/majad00/Openwrt_Zyxel-EX3301-T0.git
+   ```
+
+2. **Navigate to the Project Directory:**  
+   Change into the project's directory:  
+   ```
+   cd Openwrt_Zyxel-EX3301-T0
+   ```
+
+3. **Make the Script Executable:**  
+   Run the following command to change the permission of the script:  
+   ```
+   chmod +x repack_firmware
+   ```
+
+4. **Run the Firmware Repack Script:**  
+   Execute the script with superuser privileges:  it will repack firmware and sign it as well.
+   ```
+   sudo ./repack_firmware_v17
+   ```
+
+5. **Custome firmware:**  
+   You can find the custom firmware in the root directory named "final.bin".
+
+
+
+⚠️ **Note**: If you are on vendor-specific ISP firmware that prevents you from flashing generic firmware, copy the ISP-provided firmware to the project root directory and rename it to "zyxel-3.3-squashfs-rollback.bin." 
+Run the "repack_firmware" , it will transfer the signature from the ISP-specific firmware to your custom OpenWrt build (final.bin).
 
 ## 📋 Detailed Documentation
 
