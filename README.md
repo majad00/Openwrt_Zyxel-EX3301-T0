@@ -1,14 +1,13 @@
 # Openwrt for Zyxel EX3301-T0 
-## MediaTek/Airoha EN751627 Based Chips
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/majad00/Openwrt_Zyxel-EX3301-T0)](https://github.com/majad00/Openwrt_Zyxel_EX3310-T0/releases)
 [![Downloads](https://img.shields.io/github/downloads/majad00/Openwrt_Zyxel-EX3301-T0/releases/tag/Openwrt)](https://github.com/majad00/Openwrt_Zyxel-EX3301-T0/releases/tag/Openwrt)
 
 OpenWrt for Zyxel EX3301-T0 is a community-built version developed using ImageBuilder and the OpenWrt 15.05 source code. After flashing it through the OEM firmware upgrade, you can start using this OpenWrt build immediately. If needed, you can revert to the OEM firmware by using a rollback firmware or by installing the latest Zyxel firmware.
-
-> Version V-17 is stable release which includes support for Wi-Fi backhaul.
-
+>
+**Version V-17 is stable release which includes support for Wi-Fi backhaul.**
+## Troubleshooting
 > If you are on vender specific ISP please rebuild custom firmware ( see section "Build from source")
 
 ## Quick Download
