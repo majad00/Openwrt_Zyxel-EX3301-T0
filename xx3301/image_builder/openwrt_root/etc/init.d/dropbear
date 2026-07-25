@@ -123,6 +123,15 @@ service_triggers()
 {
 	procd_add_reload_trigger "dropbear"
 	procd_add_validation validate_section_dropbear
+
+	trigger_dropbear_interface() {
+		local interface
+		config_get interface "$1" Interface
+		[ -n "$interface" ] && procd_add_reload_interface_trigger "$interface"
+	}
+	
+	config_load "${NAME}"
+	config_foreach trigger_dropbear_interface dropbear
 }
 
 killclients()
