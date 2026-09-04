@@ -1,0 +1,8 @@
+#!/bin/sh
+# Re-apply /etc/firewall.user whenever the WAN comes up (PPPoE reconnect, router reboot).
+# See /usr/sbin/apply-firewall-user for why fw3 does not do this on this firmware.
+
+[ "$ACTION" = ifup -o "$ACTION" = ifupdate ] || exit 0
+[ "$INTERFACE" = wan ] || exit 0
+
+/usr/sbin/apply-firewall-user "hotplug $ACTION $INTERFACE"

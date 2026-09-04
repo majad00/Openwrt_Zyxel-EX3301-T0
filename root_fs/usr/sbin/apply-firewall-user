@@ -1,0 +1,18 @@
+#!/bin/sh
+# Apply the user's custom firewall rules (/etc/firewall.user, also edited from
+# LuCI -> Network -> Firewall -> Custom Rules).
+#
+# On this firmware the OpenWrt firewall service (/etc/init.d/firewall, fw3) is not
+# shipped: netfilter is driven by the Zyxel side (zyxel_lan / wifi-backhaul.sh through the
+# chroot). Nothing ever executed /etc/firewall.user, so custom rules were silently lost on
+# every boot. This helper runs it at the end of zyxel_lan, after every NAT flush done by
+# wifi-backhaul.sh and on every ifup of the WAN interface (hotplug).
+#
+# Rules in /etc/firewall.user MUST be idempotent (the file is run several times):
+#   iptables -C FORWARD -s 192.168.1.50 -o pppoe-wan -j DROP 2>/dev/null || \
+#     iptables -I FORWARD 1 -s 192.168.1.50 -o pppoe-wan -j DROP
+
+REASON="${1:-manual}"
+[ -f /etc/firewall.user ] || exit 0
+logger -t firewall "Applying /etc/firewall.user ($REASON)"
+sh /etc/firewall.user

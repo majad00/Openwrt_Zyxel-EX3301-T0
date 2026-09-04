@@ -106,5 +106,10 @@ start() {
                                 usr/bin/wifi-backhaul.sh &
 
 
+
+        # Custom user rules (/etc/firewall.user). fw3 is not shipped on this firmware, so
+        # nothing else would ever run them. See /usr/sbin/apply-firewall-user.
+        /usr/sbin/apply-firewall-user boot
+
                 echo " 100%  Ready! - Press any key to login ...]" > /dev/console
 }
