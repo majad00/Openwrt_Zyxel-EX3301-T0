@@ -88,6 +88,39 @@ Run the "repack_firmware" , it will transfer the signature from the ISP-specific
 |------|------------|-----------|---------------|-------|
 | **AP Mode** | 192.168.1.1 | Zyxel_Matrix | 12345678 | root/1234 |
 
+## 🔥 Custom firewall rules and logging
+
+This firmware does not ship the OpenWrt firewall service (`/etc/init.d/firewall` / `fw3`):
+netfilter is configured by the Zyxel side (`zyxel_lan`, `wifi-backhaul.sh`). Because of that,
+rules written to `/etc/firewall.user` (LuCI → Network → Firewall → Custom Rules) were never
+executed and silently disappeared on every reboot.
+
+Since this change `/usr/sbin/apply-firewall-user` runs `/etc/firewall.user`:
+
+- at the end of boot (`zyxel_lan`),
+- after every NAT flush done by `wifi-backhaul.sh`,
+- on every `ifup` of the WAN interface (hotplug), i.e. after each PPPoE reconnect.
+
+The file is therefore executed several times: write **idempotent** rules, for example
+
+```sh
+# block a LAN device from reaching the Internet
+iptables -C FORWARD -s 192.168.1.50 -o pppoe-wan -j DROP 2>/dev/null || \
+  iptables -I FORWARD 1 -s 192.168.1.50 -o pppoe-wan -j DROP
+```
+
+**Logs.** The default `logd` ring buffer was 16 KiB (a couple of minutes of Zyxel `zcmd`
+chatter) and nothing survives a reboot. The default is now 256 KiB (`log_size` in
+`/etc/config/system`). To keep the last lines before a crash/reboot, send the log to another
+machine on the LAN:
+
+```sh
+uci set system.@system[0].log_ip='192.168.1.10'   # any host running a syslog UDP receiver
+uci set system.@system[0].log_port='514'
+uci set system.@system[0].log_proto='udp'
+uci commit system && /etc/init.d/log restart
+```
+
 ## 🛠️ Development
 
 This project include busybox based on OpenWrt. To build from source:

@@ -18,6 +18,8 @@ if [ "$ENABLED" != "1" ]; then
     
     chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -F
     chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -o nas10 -j MASQUERADE
+    # NAT was flushed above: put the user's custom rules back.
+    /usr/sbin/apply-firewall-user "backhaul (mesh disabled)"
     exit 0
 fi
 
@@ -76,6 +78,8 @@ chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -o nas10 -j MASQ
 chroot /tmp/zyxel_root /usr/sbin/iptables -t nat -A POSTROUTING -o br-mesh -j MASQUERADE
 chroot /tmp/zyxel_root /usr/sbin/iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 chroot /tmp/zyxel_root /usr/sbin/iptables -P FORWARD ACCEPT
+# NAT was flushed above: put the user's custom rules back.
+/usr/sbin/apply-firewall-user "backhaul (mesh enabled)"
 echo 1 > /proc/sys/net/ipv4/ip_forward
 #leave it
 #echo 1 > /proc/tc3162/hwnat_off
